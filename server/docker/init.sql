@@ -1,1 +1,2 @@
 CREATE DATABASE brevly;
+CREATE DATABASE brevly_test;
