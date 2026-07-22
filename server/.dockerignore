@@ -1,0 +1,33 @@
+# Dependências e arquivos do pnpm
+node_modules/
+.pnpm-store/
+pnpm-debug.log
+.npm/
+
+# Arquivos de log da aplicação Fastify
+logs/
+*.log
+
+# Variáveis de ambiente secretas
+.env
+.env.*
+!.env.example
+
+# Testes e cobertura de código
+test/
+tests/
+coverage/
+.nyc_output/
+
+# Docker e Controle de Versão
+.git
+.gitignore
+dockerfile
+docker-compose.yml
+.dockerignore
+
+# IDEs e Sistema Operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

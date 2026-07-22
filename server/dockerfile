@@ -1,0 +1,35 @@
+FROM node:24 AS base
+
+RUN npm install pnpm
+
+FROM base AS dependencies
+
+WORKDIR /var/www/html
+
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm install
+
+FROM base AS build
+
+WORKDIR /var/www/html
+
+COPY ./ ./
+
+COPY --from=dependencies /var/www/html/node_modules ./
+
+RUN pnpm build
+
+RUN pnpm prune --prod
+
+FROM gcr.io/distroless/nodejs24-debian13 AS deploy
+
+USER 1000
+
+WORKDIR /var/www/html
+
+COPY --from=build /var/www/html/dist ./dist
+COPY --from=build /var/www/html/node_modules ./node_modules
+COPY --from=build /var/www/html/package.json ./package.json
+
+CMD ["dist/main.mjs"]
