@@ -15,11 +15,11 @@ export const createShortUrlRoute: FastifyPluginAsyncZod = async (
   server: FastifyInstance
 ) => {
   server.post<{ Body: CreateShortUrlBody }>(
-    '/shortened-urls',
+    '/urls',
     {
       schema: {
         summary: 'Create a short url',
-        tags: ['shortened-urls'],
+        tags: ['urls'],
         body: createShortUrlBody,
         response: {
           201: z.void(),

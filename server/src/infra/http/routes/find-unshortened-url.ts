@@ -14,11 +14,11 @@ export const findUnshortenedUrlRoute: FastifyPluginAsyncZod = async (
   server: FastifyInstance
 ) => {
   server.get<{ Params: FindUnshortenedUrlParams }>(
-    '/unshortened-urls/:slug',
+    '/urls/:slug/unshortened',
     {
       schema: {
         summary: 'Find a unshortened url by slug',
-        tags: ['unshortened-urls'],
+        tags: ['urls'],
         params: findUnshortenedUrlParams,
         response: {
           200: z.object({

@@ -13,11 +13,11 @@ export const removeShortUrlRoute: FastifyPluginAsyncZod = async (
   server: FastifyInstance
 ) => {
   server.delete<{ Params: RemoveShortUrlParams }>(
-    '/shortened-urls/:slug',
+    '/urls/:slug',
     {
       schema: {
         summary: 'Remove a short url by slug',
-        tags: ['shortened-urls'],
+        tags: ['urls'],
         params: removeShortUrlParams,
         response: {
           204: z.void(),
