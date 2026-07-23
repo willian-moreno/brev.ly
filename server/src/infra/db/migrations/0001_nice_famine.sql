@@ -1,0 +1,1 @@
+ALTER TABLE "shortened_urls" ALTER COLUMN "total_visits" SET NOT NULL;
