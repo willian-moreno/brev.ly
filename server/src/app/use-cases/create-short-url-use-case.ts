@@ -4,10 +4,11 @@ import { ShortenedUrlAlreadyExists } from '@/app/errors/shortened-url-already-ex
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
+import { isSlugValid } from '@/shared/is-slug-valid'
 
 export const createShortUrlInput = z.object({
   unshortenedUrl: z.url({ error: 'The url contains invalid characters' }),
-  slug: z.string().refine(value => !/[^a-zA-Z0-9-_]/.test(value), {
+  slug: z.string().refine(isSlugValid, {
     error: 'The slug contains invalid characters',
   }),
 })
