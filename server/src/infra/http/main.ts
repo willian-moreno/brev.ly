@@ -12,6 +12,7 @@ import z from 'zod'
 import { env } from '@/env'
 import { createShortUrlRoute } from './routes/create-short-url'
 import { findUnshortenedUrlRoute } from './routes/find-unshortened-url'
+import { increaseUrlVisitRoute } from './routes/increase-url-visit'
 import { removeShortUrlRoute } from './routes/remove-short-url'
 import { transformSwaggerSchema } from './transform-swagger-schema'
 
@@ -61,6 +62,7 @@ server.register(fastifySwaggerUi, {
 server.register(findUnshortenedUrlRoute)
 server.register(createShortUrlRoute)
 server.register(removeShortUrlRoute)
+server.register(increaseUrlVisitRoute)
 
 server.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
   console.log(`🤖 HTTP server is running on port ${env.PORT}`)
