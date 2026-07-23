@@ -23,7 +23,10 @@ export const createShortUrlRoute: FastifyPluginAsyncZod = async (
         body: createShortUrlBody,
         response: {
           201: z.void(),
-          400: z.object({ message: z.string() }),
+          400: z.object({
+            message: z.string(),
+            issues: z.array(z.unknown()).optional(),
+          }),
           409: z.object({ message: z.string() }),
         },
       },
