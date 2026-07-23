@@ -18,6 +18,7 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": false,
     "explorer.fileNesting.patterns": {
+        ".env": ".env.*",
         "package.json": "biome.json, drizzle.config.ts, pnpm-lock.yaml, tsconfig*.json, tsup.config.ts, vite.config.*"
     },
     "js/ts.tsdk.path": "node_modules\\typescript\\lib"

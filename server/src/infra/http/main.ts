@@ -11,6 +11,7 @@ import {
 import z from 'zod'
 import { env } from '@/env'
 import { createShortUrlRoute } from './routes/create-short-url'
+import { removeShortUrlRoute } from './routes/remove-short-url'
 import { transformSwaggerSchema } from './transform-swagger-schema'
 
 const server = fastify()
@@ -57,6 +58,7 @@ server.register(fastifySwaggerUi, {
 })
 
 server.register(createShortUrlRoute)
+server.register(removeShortUrlRoute)
 
 server.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
   console.log(`🤖 HTTP server is running on port ${env.PORT}`)
