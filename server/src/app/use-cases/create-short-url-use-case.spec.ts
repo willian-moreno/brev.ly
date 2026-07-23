@@ -39,19 +39,21 @@ describe('create short url', () => {
 
     expect(parse.success).toBe(false)
 
-    await expect(() =>
-      createShortUrlUseCase({
+    try {
+      await createShortUrlUseCase({
         unshortenedUrl,
         slug,
       })
-    ).rejects.toThrow('The url contains invalid characters')
 
-    await expect(() =>
-      createShortUrlUseCase({
-        unshortenedUrl,
-        slug,
-      })
-    ).rejects.toThrow(z.ZodError)
+      expect.fail('Expected function to throw')
+    } catch (error) {
+      expect(error).toBeInstanceOf(z.ZodError)
+
+      expect(error).toHaveProperty(
+        'message',
+        expect.stringContaining('The url contains invalid characters')
+      )
+    }
 
     const result = await db
       .select()
@@ -91,11 +93,15 @@ describe('create short url', () => {
       expect(sut2.left.message).toBe('Shortened url already exists')
     }
 
-    await expect(() =>
-      db.insert(schema.shortenedUrls).values({
+    try {
+      await db.insert(schema.shortenedUrls).values({
         unshortenedUrl,
         slug,
       })
-    ).rejects.toThrow(DrizzleQueryError)
+
+      expect.fail('Expected function to throw')
+    } catch (error) {
+      expect(error).toBeInstanceOf(DrizzleQueryError)
+    }
   })
 })

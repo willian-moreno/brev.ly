@@ -52,12 +52,17 @@ describe('Remove short url', () => {
 
     expect(parse.success).toBe(false)
 
-    await expect(() => removeShortUrlUseCase({ slug })).rejects.toThrow(
-      'The slug contains invalid characters'
-    )
+    try {
+      await removeShortUrlUseCase({ slug })
 
-    await expect(() => removeShortUrlUseCase({ slug })).rejects.toThrow(
-      z.ZodError
-    )
+      expect.fail('Expected function to throw')
+    } catch (error) {
+      expect(error).toBeInstanceOf(z.ZodError)
+
+      expect(error).toHaveProperty(
+        'message',
+        expect.stringContaining('The slug contains invalid characters')
+      )
+    }
   })
 })
