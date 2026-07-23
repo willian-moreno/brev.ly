@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto'
 import { eq } from 'drizzle-orm'
-import { uuidv7 } from 'uuidv7'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { db } from '@/infra/db'
@@ -14,9 +13,11 @@ import {
 
 describe('Remove short url', () => {
   it('should be able to remove an existing shortened url', async () => {
+    const slug = randomUUID().split('-')[0]
+
     const sut = await createShortUrlUseCase({
       unshortenedUrl: 'https://ftr.rocketseat.com.br',
-      slug: randomUUID().split('-')[0],
+      slug,
     })
 
     expect(isRight(sut)).toBe(true)
@@ -25,39 +26,36 @@ describe('Remove short url', () => {
       return
     }
 
-    const id = sut.right.id
-
     const result = await db
       .select()
       .from(schema.shortenedUrls)
-      .where(eq(schema.shortenedUrls.id, id))
+      .where(eq(schema.shortenedUrls.slug, slug))
 
     expect(result).toHaveLength(1)
 
-    await removeShortUrlUseCase({ id })
+    await removeShortUrlUseCase({ slug })
 
     const result2 = await db
       .select()
       .from(schema.shortenedUrls)
-      .where(eq(schema.shortenedUrls.id, id))
+      .where(eq(schema.shortenedUrls.slug, slug))
 
     expect(result2).toHaveLength(0)
   })
 
-  const invalidIds = [
-    'invalid-value',
-    uuidv7().split('-').slice(0, -1).join('-'),
-  ]
+  const slugs = ['invalid@slug', 'url#123', 'foo%20bar']
 
   it.each(
-    invalidIds
-  )('should not be able to remove a shortened url with an invalid id param: $0', async id => {
-    const parse = removeShortUrlInput.safeParse({ id })
+    slugs
+  )('should not be able to remove a shortened url with an invalid slug param: $0', async slug => {
+    const parse = removeShortUrlInput.safeParse({ slug })
 
     expect(parse.success).toBe(false)
 
-    expect(parse.error?.issues[0].message).toBe('The id format is invalid')
+    expect(parse.error?.issues[0].message).toBe(
+      'The slug contains invalid characters'
+    )
 
-    expect(() => removeShortUrlUseCase({ id })).rejects.toThrow(z.ZodError)
+    expect(() => removeShortUrlUseCase({ slug })).rejects.toThrow(z.ZodError)
   })
 })

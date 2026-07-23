@@ -4,7 +4,7 @@ import z from 'zod'
 import { removeShortUrlUseCase } from '@/app/use-cases/remove-short-url-use-case'
 
 const removeShortUrlParams = z.object({
-  id: z.string(),
+  slug: z.string(),
 })
 
 type RemoveShortUrlParams = z.infer<typeof removeShortUrlParams>
@@ -13,10 +13,10 @@ export const removeShortUrlRoute: FastifyPluginAsyncZod = async (
   server: FastifyInstance
 ) => {
   server.delete<{ Params: RemoveShortUrlParams }>(
-    '/shortened-urls/:id',
+    '/shortened-urls/:slug',
     {
       schema: {
-        summary: 'Remove a short url by id',
+        summary: 'Remove a short url by slug',
         tags: ['shortened-urls'],
         params: removeShortUrlParams,
         response: {
@@ -29,9 +29,9 @@ export const removeShortUrlRoute: FastifyPluginAsyncZod = async (
       },
     },
     async (request, reply) => {
-      const { id } = request.params
+      const { slug } = request.params
 
-      await removeShortUrlUseCase({ id })
+      await removeShortUrlUseCase({ slug })
 
       return reply.code(204).send()
     }
