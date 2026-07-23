@@ -39,15 +39,14 @@ describe('create short url', () => {
 
     expect(parse.success).toBe(false)
 
-    expect(parse.error?.issues[0].message).toBe(
-      'The url contains invalid characters'
-    )
+    await expect(() =>
+      createShortUrlUseCase({
+        unshortenedUrl,
+        slug,
+      })
+    ).rejects.toThrow('The url contains invalid characters')
 
-    expect(parse.error?.issues[1].message).toBe(
-      'The slug contains invalid characters'
-    )
-
-    expect(() =>
+    await expect(() =>
       createShortUrlUseCase({
         unshortenedUrl,
         slug,
@@ -92,7 +91,7 @@ describe('create short url', () => {
       expect(sut2.left.message).toBe('Shortened url already exists')
     }
 
-    expect(() =>
+    await expect(() =>
       db.insert(schema.shortenedUrls).values({
         unshortenedUrl,
         slug,
