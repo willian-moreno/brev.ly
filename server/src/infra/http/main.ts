@@ -11,6 +11,7 @@ import {
 import z from 'zod'
 import { env } from '@/env'
 import { createShortUrlRoute } from './routes/create-short-url'
+import { findUnshortenedUrlRoute } from './routes/find-unshortened-url'
 import { removeShortUrlRoute } from './routes/remove-short-url'
 import { transformSwaggerSchema } from './transform-swagger-schema'
 
@@ -57,6 +58,7 @@ server.register(fastifySwaggerUi, {
   routePrefix: '/docs',
 })
 
+server.register(findUnshortenedUrlRoute)
 server.register(createShortUrlRoute)
 server.register(removeShortUrlRoute)
 
