@@ -39,13 +39,11 @@ export const createShortUrlRoute: FastifyPluginAsyncZod = async (
       if (isLeft(result)) {
         const error = unwrapEither(result)
 
-        switch (error.name) {
-          case 'ShortenedUrlAlreadyExists': {
-            return reply.status(409).send({ message: error.message })
-          }
+        if (error.name === 'ShortenedUrlAlreadyExists') {
+          return reply.status(409).send({ message: error.message })
         }
 
-        return
+        return reply.status(400).send({ message: error.message })
       }
 
       return reply.status(201).send()
