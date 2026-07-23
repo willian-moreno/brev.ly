@@ -2,10 +2,10 @@ import { randomUUID } from 'node:crypto'
 import { DrizzleQueryError, eq } from 'drizzle-orm'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
+import { ShortenedUrlAlreadyExists } from '@/app/errors/shortened-url-already-exists'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { isLeft, isRight } from '@/shared/either'
-import { ShortenedUrlAlreadyExists } from '../errors/shortened-url-already-exists'
 import {
   createShortUrlInput,
   createShortUrlUseCase,
