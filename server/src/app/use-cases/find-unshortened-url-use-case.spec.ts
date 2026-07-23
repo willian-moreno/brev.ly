@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
-import { UnshortenedUrlNotFound } from '../errors/unshortened-url-not-found'
+import { UrlNotFound } from '../errors/url-not-found'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
   findUnshortenedUrlInput,
@@ -50,9 +50,9 @@ describe('Find unshortened url', () => {
 
     const error = unwrapEither(sut)
 
-    expect(error.message).toBe('Unshortened url not found')
+    expect(error.message).toBe('URL not found')
 
-    expect(error).toBeInstanceOf(UnshortenedUrlNotFound)
+    expect(error).toBeInstanceOf(UrlNotFound)
   })
 
   const slugs = ['invalid@slug', 'url#123', 'foo%20bar']

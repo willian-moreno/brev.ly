@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import z from 'zod'
-import { ShortenedUrlAlreadyExists } from '@/app/errors/shortened-url-already-exists'
+import { UrlAlreadyExists } from '@/app/errors/url-already-exists'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
@@ -30,7 +30,7 @@ export async function createShortUrlUseCase(
     .where(eq(schema.shortenedUrls.slug, slug))
 
   if (result.length > 0) {
-    return makeLeft(new ShortenedUrlAlreadyExists())
+    return makeLeft(new UrlAlreadyExists())
   }
 
   const [{ id }] = await db

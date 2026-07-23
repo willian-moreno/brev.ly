@@ -40,7 +40,7 @@ export const findUnshortenedUrlRoute: FastifyPluginAsyncZod = async (
       if (isLeft(result)) {
         const error = unwrapEither(result)
 
-        if (error.name === 'UnshortenedUrlNotFound') {
+        if (error.name === 'UrlNotFound') {
           return reply.code(404).send({ message: error.message })
         }
 

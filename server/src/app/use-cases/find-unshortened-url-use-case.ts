@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import z from 'zod'
-import { UnshortenedUrlNotFound } from '@/app/errors/unshortened-url-not-found'
+import { UrlNotFound } from '@/app/errors/url-not-found'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
@@ -31,7 +31,7 @@ export async function findUnshortenedUrlUseCase(
     .where(eq(schema.shortenedUrls.slug, slug))
 
   if (result.length === 0) {
-    return makeLeft(new UnshortenedUrlNotFound())
+    return makeLeft(new UrlNotFound())
   }
 
   return makeRight({
