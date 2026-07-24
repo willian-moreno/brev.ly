@@ -1,7 +1,7 @@
-import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
+import { makeSlug } from '@/test/factories/make-slug'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
   type FindUrlsInput,
@@ -12,21 +12,21 @@ import {
 describe('Find urls', () => {
   describe('search', () => {
     it('should find urls matching the search term in unshortenedUrl', async () => {
-      const token = randomUUID().split('-')[0]
-      const slugA = `${token}-a`
-      const slugB = `${token}-b`
+      const slug = makeSlug()
+      const slugA = `${slug}-1`
+      const slugB = `${slug}-2`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br/${slug}`,
         slug: slugA,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br/${slug}`,
         slug: slugB,
       })
 
-      const sut = await findUrlsUseCase({ search: token })
+      const sut = await findUrlsUseCase({ search: slug })
 
       expect(isRight(sut)).toBe(true)
 
@@ -42,15 +42,14 @@ describe('Find urls', () => {
     })
 
     it('should find urls matching the search term in slug', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
         slug,
       })
 
-      const sut = await findUrlsUseCase({ search: token })
+      const sut = await findUrlsUseCase({ search: slug })
 
       expect(isRight(sut)).toBe(true)
 
@@ -66,7 +65,7 @@ describe('Find urls', () => {
 
     it('should return an empty list when the search term matches nothing', async () => {
       const sut = await findUrlsUseCase({
-        search: `nonexistent-${randomUUID()}`,
+        search: 'nonexistent',
       })
 
       expect(isRight(sut)).toBe(true)
@@ -101,10 +100,10 @@ describe('Find urls', () => {
 
   describe('sorting', () => {
     it('should sort results by slug in ascending order', async () => {
-      const token = randomUUID().split('-')[0]
-      const slugA = `${token}-a`
-      const slugB = `${token}-b`
-      const slugC = `${token}-c`
+      const slug = makeSlug()
+      const slugA = `${slug}-1`
+      const slugB = `${slug}-2`
+      const slugC = `${slug}-3`
 
       await createShortUrlUseCase({
         unshortenedUrl: `https://ftr.rocketseat.com.br`,
@@ -122,7 +121,7 @@ describe('Find urls', () => {
       })
 
       const sut = await findUrlsUseCase({
-        search: token,
+        search: slug,
         sortBy: 'slug',
         sortDirection: 'asc',
       })
@@ -139,10 +138,10 @@ describe('Find urls', () => {
     })
 
     it('should sort results by slug in descending order', async () => {
-      const token = randomUUID().split('-')[0]
-      const slugA = `${token}-a`
-      const slugB = `${token}-b`
-      const slugC = `${token}-c`
+      const slug = makeSlug()
+      const slugA = `${slug}-1`
+      const slugB = `${slug}-2`
+      const slugC = `${slug}-3`
 
       await createShortUrlUseCase({
         unshortenedUrl: `https://ftr.rocketseat.com.br`,
@@ -160,7 +159,7 @@ describe('Find urls', () => {
       })
 
       const sut = await findUrlsUseCase({
-        search: token,
+        search: slug,
         sortBy: 'slug',
         sortDirection: 'desc',
       })
@@ -177,9 +176,9 @@ describe('Find urls', () => {
     })
 
     it('should apply a deterministic default sort when no sort params are provided', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug1 = `${token}-1`
-      const slug2 = `${token}-2`
+      const slug = makeSlug()
+      const slug1 = `${slug}-1`
+      const slug2 = `${slug}-2`
 
       await createShortUrlUseCase({
         unshortenedUrl: `https://ftr.rocketseat.com.br`,
@@ -191,8 +190,8 @@ describe('Find urls', () => {
         slug: slug2,
       })
 
-      const first = await findUrlsUseCase({ search: token })
-      const second = await findUrlsUseCase({ search: token })
+      const first = await findUrlsUseCase({ search: slug })
+      const second = await findUrlsUseCase({ search: slug })
 
       expect(isRight(first)).toBe(true)
       expect(isRight(second)).toBe(true)
@@ -214,8 +213,8 @@ describe('Find urls', () => {
 
   describe('pagination', () => {
     it('should paginate results according to page and pageSize', async () => {
-      const token = randomUUID().split('-')[0]
-      const slugs = [1, 2, 3, 4, 5].map(n => `${token}-${n}`)
+      const slug = makeSlug()
+      const slugs = [1, 2, 3, 4, 5].map(n => `${slug}-${n}`)
 
       for (const slug of slugs) {
         await createShortUrlUseCase({
@@ -225,7 +224,7 @@ describe('Find urls', () => {
       }
 
       const page1 = await findUrlsUseCase({
-        search: token,
+        search: slug,
         sortBy: 'slug',
         sortDirection: 'asc',
         page: 1,
@@ -233,7 +232,7 @@ describe('Find urls', () => {
       })
 
       const page2 = await findUrlsUseCase({
-        search: token,
+        search: slug,
         sortBy: 'slug',
         sortDirection: 'asc',
         page: 2,
@@ -241,7 +240,7 @@ describe('Find urls', () => {
       })
 
       const page3 = await findUrlsUseCase({
-        search: token,
+        search: slug,
         sortBy: 'slug',
         sortDirection: 'asc',
         page: 3,
@@ -267,8 +266,8 @@ describe('Find urls', () => {
     })
 
     it('should not apply pagination when page is 0, due to the falsy check in the use case', async () => {
-      const token = randomUUID().split('-')[0]
-      const slugs = [1, 2, 3].map(n => `${token}-${n}`)
+      const slug = makeSlug()
+      const slugs = [1, 2, 3].map(n => `${slug}-${n}`)
 
       for (const slug of slugs) {
         await createShortUrlUseCase({
@@ -278,7 +277,7 @@ describe('Find urls', () => {
       }
 
       const sut = await findUrlsUseCase({
-        search: token,
+        search: slug,
         page: 0,
         pageSize: 2,
       })

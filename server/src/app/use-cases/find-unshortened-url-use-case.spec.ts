@@ -1,8 +1,8 @@
-import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
+import { makeSlug } from '@/test/factories/make-slug'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
   type FindUnshortenedUrlInput,
@@ -13,8 +13,7 @@ import {
 describe('Find unshortened url', () => {
   describe('happy path', () => {
     it('should be able to find the unshortened url for an existing slug', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       const created = await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -42,8 +41,7 @@ describe('Find unshortened url', () => {
 
   describe('not found', () => {
     it('should not be able to find an unshortened url for a slug that does not exist', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `non-existent-${token}`
+      const slug = makeSlug()
 
       const sut = await findUnshortenedUrlUseCase({ slug })
 
@@ -85,8 +83,7 @@ describe('Find unshortened url', () => {
     })
 
     it('should accept a valid slug', () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       const parse = findUnshortenedUrlInput.safeParse({ slug })
 

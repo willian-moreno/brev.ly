@@ -1,8 +1,8 @@
-import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { UrlAlreadyExists } from '@/app/errors/url-already-exists'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
+import { makeSlug } from '@/test/factories/make-slug'
 import {
   type CreateShortUrlInput,
   createShortUrlInput,
@@ -12,8 +12,7 @@ import {
 describe('Create short url', () => {
   describe('happy path', () => {
     it('should be able to create a short url', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       const sut = await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -36,8 +35,7 @@ describe('Create short url', () => {
 
   describe('conflict', () => {
     it('should not be able to create a short url with a slug that already exists', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       const first = await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -78,8 +76,7 @@ describe('Create short url', () => {
     )('should not be able to create a short url with $description as unshortenedUrl', async ({
       unshortenedUrl,
     }) => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
       const input: CreateShortUrlInput = { unshortenedUrl, slug }
 
       const parse = createShortUrlInput.safeParse(input)
@@ -117,8 +114,7 @@ describe('Create short url', () => {
     })
 
     it('should accept a valid input', () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       const parse = createShortUrlInput.safeParse({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',

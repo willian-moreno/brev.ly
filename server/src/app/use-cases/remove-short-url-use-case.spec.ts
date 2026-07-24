@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
+import { makeSlug } from '@/test/factories/make-slug'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import { findUnshortenedUrlUseCase } from './find-unshortened-url-use-case'
 import {
@@ -14,8 +15,7 @@ import {
 describe('Remove short url', () => {
   describe('happy path', () => {
     it('should remove an existing short url', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       const created = await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -44,8 +44,8 @@ describe('Remove short url', () => {
     })
 
     it('should not affect other existing short urls when removing one', async () => {
-      const slugToRemove = randomUUID().split('-')[0]
-      const slugToKeep = randomUUID().split('-')[0]
+      const slugToRemove = `${randomUUID().split('-')[0]}-to-remove`
+      const slugToKeep = `${randomUUID().split('-')[0]}-to-keep`
 
       await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -82,8 +82,7 @@ describe('Remove short url', () => {
 
   describe('not found', () => {
     it('should not be able to remove a short url that does not exist', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `non-existent-${token}`
+      const slug = makeSlug()
 
       const sut = await removeShortUrlUseCase({ slug })
 
@@ -100,8 +99,7 @@ describe('Remove short url', () => {
     })
 
     it('should not be able to remove the same short url twice', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -148,8 +146,7 @@ describe('Remove short url', () => {
     })
 
     it('should accept a valid slug', () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `${token}-unique-slug`
+      const slug = makeSlug()
 
       const parse = removeShortUrlInput.safeParse({ slug })
 

@@ -1,8 +1,8 @@
-import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
+import { makeSlug } from '@/test/factories/make-slug'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
   type IncreaseUrlVisitInput,
@@ -13,8 +13,7 @@ import {
 describe('Increase url visit', () => {
   describe('happy path', () => {
     it('should increase the total visits by 1 for an existing slug', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `non-existent-${token}`
+      const slug = makeSlug()
 
       const created = await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -40,8 +39,7 @@ describe('Increase url visit', () => {
     })
 
     it('should return the correct shape and increment multiple times consistently', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `non-existent-${token}`
+      const slug = makeSlug()
 
       await createShortUrlUseCase({
         unshortenedUrl: 'https://ftr.rocketseat.com.br',
@@ -87,8 +85,7 @@ describe('Increase url visit', () => {
 
   describe('not found', () => {
     it('should not be able to increase the visit count for a slug that does not exist', async () => {
-      const token = randomUUID().split('-')[0]
-      const slug = `non-existent-${token}`
+      const slug = makeSlug()
 
       const sut = await increaseUrlVisitUseCase({ slug })
 
@@ -129,9 +126,9 @@ describe('Increase url visit', () => {
     })
 
     it('should accept a valid slug', () => {
-      const parse = increaseUrlVisitInput.safeParse({
-        slug: randomUUID().split('-')[0],
-      })
+      const slug = makeSlug()
+
+      const parse = increaseUrlVisitInput.safeParse({ slug })
 
       expect(parse.success).toBe(true)
     })
