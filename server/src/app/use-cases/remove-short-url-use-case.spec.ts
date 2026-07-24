@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
+import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import { findUnshortenedUrlUseCase } from './find-unshortened-url-use-case'
@@ -29,7 +30,13 @@ describe('Remove short url', () => {
 
       const sut = await removeShortUrlUseCase({ slug })
 
-      expect(sut).toBeUndefined()
+      expect(isRight(sut)).toBe(true)
+
+      if (isLeft(sut)) {
+        return
+      }
+
+      expect(unwrapEither(sut)).toBeTruthy()
 
       const afterRemoval = await findUnshortenedUrlUseCase({ slug })
 
@@ -50,7 +57,9 @@ describe('Remove short url', () => {
         slug: slugToKeep,
       })
 
-      await removeShortUrlUseCase({ slug: slugToRemove })
+      const sut = await removeShortUrlUseCase({ slug: slugToRemove })
+
+      expect(isRight(sut)).toBe(true)
 
       const removedLookup = await findUnshortenedUrlUseCase({
         slug: slugToRemove,
@@ -71,15 +80,26 @@ describe('Remove short url', () => {
     })
   })
 
-  describe('non-existent slug', () => {
-    it('should resolve silently without throwing when the slug does not exist', async () => {
+  describe('not found', () => {
+    it('should not be able to remove a short url that does not exist', async () => {
       const token = randomUUID().split('-')[0]
       const slug = `non-existent-${token}`
 
-      await expect(removeShortUrlUseCase({ slug })).resolves.toBeUndefined()
+      const sut = await removeShortUrlUseCase({ slug })
+
+      expect(isLeft(sut)).toBe(true)
+
+      if (isRight(sut)) {
+        return
+      }
+
+      const error = unwrapEither(sut)
+
+      expect(error).toBeInstanceOf(UrlNotFound)
+      expect(error.message).toBe('URL not found')
     })
 
-    it('should be idempotent when called twice for the same slug', async () => {
+    it('should not be able to remove the same short url twice', async () => {
       const token = randomUUID().split('-')[0]
       const slug = `${token}-unique-slug`
 
@@ -88,9 +108,19 @@ describe('Remove short url', () => {
         slug,
       })
 
-      await removeShortUrlUseCase({ slug })
+      const first = await removeShortUrlUseCase({ slug })
 
-      await expect(removeShortUrlUseCase({ slug })).resolves.toBeUndefined()
+      expect(isRight(first)).toBe(true)
+
+      const second = await removeShortUrlUseCase({ slug })
+
+      expect(isLeft(second)).toBe(true)
+
+      if (isRight(second)) {
+        return
+      }
+
+      expect(unwrapEither(second)).toBeInstanceOf(UrlNotFound)
     })
   })
 
