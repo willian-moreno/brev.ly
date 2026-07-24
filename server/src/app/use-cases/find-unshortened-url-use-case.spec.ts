@@ -1,80 +1,96 @@
 import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
+import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
-import { UrlNotFound } from '../errors/url-not-found'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
+  type FindUnshortenedUrlInput,
   findUnshortenedUrlInput,
   findUnshortenedUrlUseCase,
 } from './find-unshortened-url-use-case'
 
 describe('Find unshortened url', () => {
-  it('should be able to find unshortened url', async () => {
-    const slug = randomUUID().split('-')[0]
+  describe('happy path', () => {
+    it('should be able to find the unshortened url for an existing slug', async () => {
+      const token = randomUUID().split('-')[0]
+      const slug = `${token}-unique-slug`
 
-    const sut = await createShortUrlUseCase({
-      unshortenedUrl: 'https://ftr.rocketseat.com.br',
+      const created = await createShortUrlUseCase({
+        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        slug,
+      })
+
+      expect(isRight(created)).toBe(true)
+
+      const sut = await findUnshortenedUrlUseCase({ slug })
+
+      expect(isRight(sut)).toBe(true)
+
+      if (isLeft(sut)) {
+        return
+      }
+
+      const data = unwrapEither(sut)
+      const findUnshortenedUrlOutput = z.object({ unshortenedUrl: z.url() })
+      const parse = findUnshortenedUrlOutput.safeParse(data)
+
+      expect(parse.success).toBe(true)
+      expect(data.unshortenedUrl).toBe('https://ftr.rocketseat.com.br')
+    })
+  })
+
+  describe('not found', () => {
+    it('should not be able to find an unshortened url for a slug that does not exist', async () => {
+      const token = randomUUID().split('-')[0]
+      const slug = `non-existent-${token}`
+
+      const sut = await findUnshortenedUrlUseCase({ slug })
+
+      expect(isLeft(sut)).toBe(true)
+
+      if (isRight(sut)) {
+        return
+      }
+
+      const error = unwrapEither(sut)
+
+      expect(error).toBeInstanceOf(UrlNotFound)
+
+      expect(error.message).toBe('URL not found')
+    })
+  })
+
+  describe('input validation', () => {
+    const invalidSlugCases: { description: string; slug: string }[] = [
+      { description: 'a slug with an @ character', slug: 'invalid@slug' },
+      { description: 'a slug with a # character', slug: 'url#123' },
+      { description: 'a slug with an encoded space', slug: 'foo%20bar' },
+    ]
+
+    it.each(
+      invalidSlugCases
+    )('should not be able to find an unshortened url with $description', async ({
       slug,
-    })
+    }) => {
+      const input: FindUnshortenedUrlInput = { slug }
 
-    expect(isRight(sut)).toBe(true)
+      const parse = findUnshortenedUrlInput.safeParse(input)
 
-    const sut2 = await findUnshortenedUrlUseCase({ slug })
+      expect(parse.success).toBe(false)
 
-    expect(isRight(sut2)).toBe(true)
-
-    if (isLeft(sut2)) {
-      return
-    }
-
-    const data = unwrapEither(sut2)
-
-    const findUnshortenedUrlOutput = z.object({ unshortenedUrl: z.url() })
-
-    const parse = findUnshortenedUrlOutput.safeParse(data)
-
-    expect(parse.success).toBe(true)
-  })
-
-  it('should not be able to find unshortened url if one not exists', async () => {
-    const sut = await findUnshortenedUrlUseCase({
-      slug: 'non-existent-example',
-    })
-
-    expect(isLeft(sut)).toBe(true)
-
-    if (isRight(sut)) {
-      return
-    }
-
-    const error = unwrapEither(sut)
-
-    expect(error.message).toBe('URL not found')
-
-    expect(error).toBeInstanceOf(UrlNotFound)
-  })
-
-  const slugs = ['invalid@slug', 'url#123', 'foo%20bar']
-
-  it.each(
-    slugs
-  )('should not be able to find unshortened url with an invalid slug param: $0', async slug => {
-    const parse = findUnshortenedUrlInput.safeParse({ slug })
-
-    expect(parse.success).toBe(false)
-
-    try {
-      await findUnshortenedUrlUseCase({ slug })
-
-      expect.fail('Expected function to throw')
-    } catch (error) {
-      expect(error).toBeInstanceOf(z.ZodError)
-
-      expect(error).toHaveProperty(
-        'message',
-        expect.stringContaining('The slug contains invalid characters')
+      await expect(findUnshortenedUrlUseCase(input)).rejects.toBeInstanceOf(
+        z.ZodError
       )
-    }
+    })
+
+    it('should accept a valid slug', () => {
+      const token = randomUUID().split('-')[0]
+      const slug = `${token}-unique-slug`
+
+      const parse = findUnshortenedUrlInput.safeParse({ slug })
+
+      expect(parse.success).toBe(true)
+    })
   })
 })

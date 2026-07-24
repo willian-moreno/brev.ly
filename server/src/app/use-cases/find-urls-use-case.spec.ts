@@ -17,12 +17,12 @@ describe('Find urls', () => {
       const slugB = `${token}-b`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://example.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br/${token}`,
         slug: slugA,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://another.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br/${token}`,
         slug: slugB,
       })
 
@@ -46,7 +46,7 @@ describe('Find urls', () => {
       const slug = `${token}-unique-slug`
 
       await createShortUrlUseCase({
-        unshortenedUrl: 'https://foo.bar/xyz',
+        unshortenedUrl: 'https://ftr.rocketseat.com.br',
         slug,
       })
 
@@ -107,17 +107,17 @@ describe('Find urls', () => {
       const slugC = `${token}-c`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://x.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slugC,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://x.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slugA,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://x.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slugB,
       })
 
@@ -145,17 +145,17 @@ describe('Find urls', () => {
       const slugC = `${token}-c`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://x.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slugA,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://x.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slugB,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://x.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slugC,
       })
 
@@ -182,12 +182,12 @@ describe('Find urls', () => {
       const slug2 = `${token}-2`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://y.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slug1,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://y.com/${token}`,
+        unshortenedUrl: `https://ftr.rocketseat.com.br`,
         slug: slug2,
       })
 
@@ -219,7 +219,7 @@ describe('Find urls', () => {
 
       for (const slug of slugs) {
         await createShortUrlUseCase({
-          unshortenedUrl: `https://z.com/${token}`,
+          unshortenedUrl: 'https://ftr.rocketseat.com.br',
           slug,
         })
       }
@@ -272,7 +272,7 @@ describe('Find urls', () => {
 
       for (const slug of slugs) {
         await createShortUrlUseCase({
-          unshortenedUrl: `https://w.com/${token}`,
+          unshortenedUrl: 'https://ftr.rocketseat.com.br',
           slug,
         })
       }
@@ -337,13 +337,9 @@ describe('Find urls', () => {
 
       expect(parse.success).toBe(false)
 
-      try {
-        await findUrlsUseCase(input as FindUrlsInput)
-
-        expect.fail('Expected function to throw')
-      } catch (error) {
-        expect(error).toBeInstanceOf(z.ZodError)
-      }
+      await expect(
+        findUrlsUseCase(input as FindUrlsInput)
+      ).rejects.toBeInstanceOf(z.ZodError)
     })
   })
 })

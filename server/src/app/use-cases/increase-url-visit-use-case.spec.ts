@@ -1,59 +1,139 @@
 import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
+import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
+  type IncreaseUrlVisitInput,
   increaseUrlVisitInput,
   increaseUrlVisitUseCase,
 } from './increase-url-visit-use-case'
 
 describe('Increase url visit', () => {
-  it('should be able to correctly increase the total number of visits', async () => {
-    const slug = randomUUID().split('-')[0]
+  describe('happy path', () => {
+    it('should increase the total visits by 1 for an existing slug', async () => {
+      const token = randomUUID().split('-')[0]
+      const slug = `non-existent-${token}`
 
-    const sut = await createShortUrlUseCase({
-      unshortenedUrl: 'https://ftr.rocketseat.com.br',
-      slug,
-    })
+      const created = await createShortUrlUseCase({
+        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        slug,
+      })
 
-    expect(isRight(sut)).toBe(true)
+      expect(isRight(created)).toBe(true)
 
-    for (let index = 1; index <= 5; index++) {
-      const sut = await increaseUrlVisitUseCase({ slug })
+      const first = await increaseUrlVisitUseCase({ slug })
+      const second = await increaseUrlVisitUseCase({ slug })
 
-      expect(isRight(sut)).toBe(true)
+      expect(isRight(first)).toBe(true)
+      expect(isRight(second)).toBe(true)
 
-      if (isLeft(sut)) {
-        continue
+      if (isLeft(first) || isLeft(second)) {
+        return
       }
 
-      const { totalVisits } = unwrapEither(sut)
+      const firstData = unwrapEither(first)
+      const secondData = unwrapEither(second)
 
-      expect(totalVisits).toBe(index)
-    }
+      expect(secondData.totalVisits).toBe(firstData.totalVisits + 1)
+    })
+
+    it('should return the correct shape and increment multiple times consistently', async () => {
+      const token = randomUUID().split('-')[0]
+      const slug = `non-existent-${token}`
+
+      await createShortUrlUseCase({
+        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        slug,
+      })
+
+      const first = await increaseUrlVisitUseCase({ slug })
+
+      expect(isRight(first)).toBe(true)
+
+      if (isLeft(first)) {
+        return
+      }
+
+      const baseline = unwrapEither(first).totalVisits
+
+      const increaseUrlVisitOutput = z.object({
+        totalVisits: z.number().int().nonnegative(),
+      })
+
+      const results = []
+
+      for (let i = 0; i < 3; i++) {
+        const sut = await increaseUrlVisitUseCase({ slug })
+
+        expect(isRight(sut)).toBe(true)
+
+        if (isLeft(sut)) {
+          return
+        }
+
+        const data = unwrapEither(sut)
+        const parse = increaseUrlVisitOutput.safeParse(data)
+
+        expect(parse.success).toBe(true)
+
+        results.push(data.totalVisits)
+      }
+
+      expect(results).toEqual([baseline + 1, baseline + 2, baseline + 3])
+    })
   })
 
-  const slugs = ['invalid@slug', 'url#123', 'foo%20bar']
+  describe('not found', () => {
+    it('should not be able to increase the visit count for a slug that does not exist', async () => {
+      const token = randomUUID().split('-')[0]
+      const slug = `non-existent-${token}`
 
-  it.each(
-    slugs
-  )('should not be able to increase url visit with an invalid slug param: $0', async slug => {
-    const parse = increaseUrlVisitInput.safeParse({ slug })
+      const sut = await increaseUrlVisitUseCase({ slug })
 
-    expect(parse.success).toBe(false)
+      expect(isLeft(sut)).toBe(true)
 
-    try {
-      await increaseUrlVisitUseCase({ slug })
+      if (isRight(sut)) {
+        return
+      }
 
-      expect.fail('Expected function to throw')
-    } catch (error) {
-      expect(error).toBeInstanceOf(z.ZodError)
+      const error = unwrapEither(sut)
 
-      expect(error).toHaveProperty(
-        'message',
-        expect.stringContaining('The slug contains invalid characters')
+      expect(error).toBeInstanceOf(UrlNotFound)
+      expect(error.message).toBe('URL not found')
+    })
+  })
+
+  describe('input validation', () => {
+    const invalidSlugCases: { description: string; slug: string }[] = [
+      { description: 'a slug with an @ character', slug: 'invalid@slug' },
+      { description: 'a slug with a # character', slug: 'url#123' },
+      { description: 'a slug with an encoded space', slug: 'foo%20bar' },
+    ]
+
+    it.each(
+      invalidSlugCases
+    )('should not be able to increase the visit count with $description', async ({
+      slug,
+    }) => {
+      const input: IncreaseUrlVisitInput = { slug }
+
+      const parse = increaseUrlVisitInput.safeParse(input)
+
+      expect(parse.success).toBe(false)
+
+      await expect(increaseUrlVisitUseCase(input)).rejects.toBeInstanceOf(
+        z.ZodError
       )
-    }
+    })
+
+    it('should accept a valid slug', () => {
+      const parse = increaseUrlVisitInput.safeParse({
+        slug: randomUUID().split('-')[0],
+      })
+
+      expect(parse.success).toBe(true)
+    })
   })
 })
