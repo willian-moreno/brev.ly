@@ -11,6 +11,7 @@ import {
 import z from 'zod'
 import { env } from '@/env'
 import { createShortUrlRoute } from './routes/create-short-url'
+import { exportUrlsRoute } from './routes/export-urls'
 import { findUnshortenedUrlRoute } from './routes/find-unshortened-url'
 import { findUrlsRoute } from './routes/find-urls'
 import { increaseUrlVisitRoute } from './routes/increase-url-visit'
@@ -65,6 +66,7 @@ server.register(createShortUrlRoute)
 server.register(removeShortUrlRoute)
 server.register(findUnshortenedUrlRoute)
 server.register(increaseUrlVisitRoute)
+server.register(exportUrlsRoute)
 
 server.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
   console.log(`🤖 HTTP server is running on port ${env.PORT}`)
