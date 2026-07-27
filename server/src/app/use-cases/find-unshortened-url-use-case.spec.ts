@@ -3,6 +3,7 @@ import z from 'zod'
 import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
 import { makeSlug } from '@/test/factories/make-slug'
+import { makeUnshortenedUrl } from '@/test/factories/make-unshortened-url'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
   type FindUnshortenedUrlInput,
@@ -13,10 +14,11 @@ import {
 describe('Find unshortened url', () => {
   describe('happy path', () => {
     it('should be able to find the unshortened url for an existing slug', async () => {
+      const unshortenedUrl = makeUnshortenedUrl()
       const slug = makeSlug()
 
       const created = await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl,
         slug,
       })
 
@@ -35,7 +37,7 @@ describe('Find unshortened url', () => {
       const parse = findUnshortenedUrlOutput.safeParse(data)
 
       expect(parse.success).toBe(true)
-      expect(data.unshortenedUrl).toBe('https://ftr.rocketseat.com.br')
+      expect(data.unshortenedUrl).toBe(unshortenedUrl)
     })
   })
 

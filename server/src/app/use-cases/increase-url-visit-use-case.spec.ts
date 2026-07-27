@@ -3,6 +3,7 @@ import z from 'zod'
 import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
 import { makeSlug } from '@/test/factories/make-slug'
+import { makeUnshortenedUrl } from '@/test/factories/make-unshortened-url'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
   type IncreaseUrlVisitInput,
@@ -16,7 +17,7 @@ describe('Increase url visit', () => {
       const slug = makeSlug()
 
       const created = await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       })
 
@@ -42,7 +43,7 @@ describe('Increase url visit', () => {
       const slug = makeSlug()
 
       await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       })
 

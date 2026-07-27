@@ -1,5 +1,5 @@
-import { randomUUID } from 'node:crypto'
+import { faker } from '@faker-js/faker'
 
 export function makeSlug() {
-  return randomUUID().split('-')[0]
+  return `${faker.lorem.word()}-${faker.string.uuid().slice(0, 8)}`
 }

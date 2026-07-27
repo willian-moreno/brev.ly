@@ -1,9 +1,9 @@
-import { randomUUID } from 'node:crypto'
 import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { UrlNotFound } from '@/app/errors/url-not-found'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
 import { makeSlug } from '@/test/factories/make-slug'
+import { makeUnshortenedUrl } from '@/test/factories/make-unshortened-url'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import { findUnshortenedUrlUseCase } from './find-unshortened-url-use-case'
 import {
@@ -18,7 +18,7 @@ describe('Remove short url', () => {
       const slug = makeSlug()
 
       const created = await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       })
 
@@ -44,16 +44,19 @@ describe('Remove short url', () => {
     })
 
     it('should not affect other existing short urls when removing one', async () => {
-      const slugToRemove = `${randomUUID().split('-')[0]}-to-remove`
-      const slugToKeep = `${randomUUID().split('-')[0]}-to-keep`
+      const unshortenedUrl = makeUnshortenedUrl()
+      const anotherUnshortenedUrl = makeUnshortenedUrl()
+      const slug = makeSlug()
+      const slugToRemove = `${slug}-1`
+      const slugToKeep = `${slug}-2`
 
       await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl,
         slug: slugToRemove,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: 'https://another-url.com',
+        unshortenedUrl: anotherUnshortenedUrl,
         slug: slugToKeep,
       })
 
@@ -75,7 +78,7 @@ describe('Remove short url', () => {
       }
 
       expect(unwrapEither(keptLookup).unshortenedUrl).toBe(
-        'https://another-url.com'
+        anotherUnshortenedUrl
       )
     })
   })
@@ -102,7 +105,7 @@ describe('Remove short url', () => {
       const slug = makeSlug()
 
       await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       })
 

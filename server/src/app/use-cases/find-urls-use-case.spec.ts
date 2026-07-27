@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import z from 'zod'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
 import { makeSlug } from '@/test/factories/make-slug'
+import { makeUnshortenedUrl } from '@/test/factories/make-unshortened-url'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import {
   type FindUrlsInput,
@@ -17,12 +18,12 @@ describe('Find urls', () => {
       const slugB = `${slug}-2`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br/${slug}`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugA,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br/${slug}`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugB,
       })
 
@@ -45,7 +46,7 @@ describe('Find urls', () => {
       const slug = makeSlug()
 
       await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       })
 
@@ -106,17 +107,17 @@ describe('Find urls', () => {
       const slugC = `${slug}-3`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugC,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugA,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugB,
       })
 
@@ -144,17 +145,17 @@ describe('Find urls', () => {
       const slugC = `${slug}-3`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugA,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugB,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slugC,
       })
 
@@ -181,12 +182,12 @@ describe('Find urls', () => {
       const slug2 = `${slug}-2`
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slug1,
       })
 
       await createShortUrlUseCase({
-        unshortenedUrl: `https://ftr.rocketseat.com.br`,
+        unshortenedUrl: makeUnshortenedUrl(),
         slug: slug2,
       })
 
@@ -218,7 +219,7 @@ describe('Find urls', () => {
 
       for (const slug of slugs) {
         await createShortUrlUseCase({
-          unshortenedUrl: 'https://ftr.rocketseat.com.br',
+          unshortenedUrl: makeUnshortenedUrl(),
           slug,
         })
       }
@@ -271,7 +272,7 @@ describe('Find urls', () => {
 
       for (const slug of slugs) {
         await createShortUrlUseCase({
-          unshortenedUrl: 'https://ftr.rocketseat.com.br',
+          unshortenedUrl: makeUnshortenedUrl(),
           slug,
         })
       }

@@ -3,6 +3,7 @@ import z from 'zod'
 import { UrlAlreadyExists } from '@/app/errors/url-already-exists'
 import { isLeft, isRight, unwrapEither } from '@/shared/either'
 import { makeSlug } from '@/test/factories/make-slug'
+import { makeUnshortenedUrl } from '@/test/factories/make-unshortened-url'
 import {
   type CreateShortUrlInput,
   createShortUrlInput,
@@ -12,11 +13,9 @@ import {
 describe('Create short url', () => {
   describe('happy path', () => {
     it('should be able to create a short url', async () => {
-      const slug = makeSlug()
-
       const sut = await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
-        slug,
+        unshortenedUrl: makeUnshortenedUrl(),
+        slug: makeSlug(),
       })
 
       expect(isRight(sut)).toBe(true)
@@ -38,14 +37,14 @@ describe('Create short url', () => {
       const slug = makeSlug()
 
       const first = await createShortUrlUseCase({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       })
 
       expect(isRight(first)).toBe(true)
 
       const second = await createShortUrlUseCase({
-        unshortenedUrl: 'https://another-url.com',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       })
 
@@ -100,7 +99,7 @@ describe('Create short url', () => {
       slug,
     }) => {
       const input: CreateShortUrlInput = {
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
+        unshortenedUrl: makeUnshortenedUrl(),
         slug,
       }
 
@@ -114,11 +113,9 @@ describe('Create short url', () => {
     })
 
     it('should accept a valid input', () => {
-      const slug = makeSlug()
-
       const parse = createShortUrlInput.safeParse({
-        unshortenedUrl: 'https://ftr.rocketseat.com.br',
-        slug,
+        unshortenedUrl: makeUnshortenedUrl(),
+        slug: makeSlug(),
       })
 
       expect(parse.success).toBe(true)
