@@ -6,7 +6,7 @@ WORKDIR /var/www/html
 
 FROM base AS dependencies
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile
@@ -32,4 +32,4 @@ USER 1000
 COPY --chown=1000:1000 --from=build /var/www/html/dist ./dist
 COPY --chown=1000:1000 --from=build /var/www/html/node_modules ./node_modules
 
-CMD ["dist/main.mjs"]
+CMD ["dist/infra/http/main.js"]
