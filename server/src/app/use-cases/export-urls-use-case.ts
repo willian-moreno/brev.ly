@@ -1,6 +1,7 @@
 import { PassThrough, Transform } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import { stringify } from 'csv-stringify'
+import dayjs from 'dayjs'
 import { ilike, or } from 'drizzle-orm'
 import z from 'zod'
 import { FailureToUploadToStorage } from '@/app/errors/failure-to-upload-to-storage'
@@ -8,10 +9,6 @@ import { db, pg } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { uploadFileToStorage } from '@/infra/storage/upload-file-to-storage'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
-import 'dayjs/locale/pt-br'
-import dayjs from 'dayjs'
-
-dayjs.locale('pt-br')
 
 export const exportUrlsInput = z.object({
   search: z.string().optional(),
@@ -98,7 +95,7 @@ export async function exportUrlsUseCase(
   const uploadCSVToStorage = uploadFileToStorage({
     folder: 'downloads',
     contentType: 'text/csv',
-    fileName: `${dayjs().format('YYYYMMDDHHmm')}-urls.csv`,
+    fileName: `${dayjs().locale('pt-br').format('YYYYMMDDHHmm')}-urls.csv`,
     contentStream: uploadToStorageStream,
   })
 

@@ -1,6 +1,5 @@
 import type { PassThrough } from 'node:stream'
 import dayjs from 'dayjs'
-import 'dayjs/locale/pt-br'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { FailureToUploadToStorage } from '@/app/errors/failure-to-upload-to-storage'
 import * as upload from '@/infra/storage/upload-file-to-storage'
@@ -19,7 +18,7 @@ describe('Export urls', () => {
 
   describe('happy path', () => {
     it('should be able to export urls matching the search', async () => {
-      const fileName = `${dayjs().format('YYYYMMDDHHmm')}-urls.csv`
+      const fileName = `${dayjs().locale('pt-br').format('YYYYMMDDHHmm')}-urls.csv`
 
       const uploadStub = vi
         .spyOn(upload, 'uploadFileToStorage')
@@ -88,7 +87,7 @@ describe('Export urls', () => {
 
     it('should produce a CSV with only the header row when no url matches the search', async () => {
       const searchTerm = `no-match-${makeSlug()}`
-      const fileName = `${dayjs().format('YYYYMMDDHHmm')}-urls.csv`
+      const fileName = `${dayjs().locale('pt-br').format('YYYYMMDDHHmm')}-urls.csv`
 
       const uploadStub = vi
         .spyOn(upload, 'uploadFileToStorage')
@@ -147,7 +146,7 @@ describe('Export urls', () => {
 
   describe('input validation', () => {
     it('should accept an input without a search term', async () => {
-      const fileName = `${dayjs().format('YYYYMMDDHHmm')}-urls.csv`
+      const fileName = `${dayjs().locale('pt-br').format('YYYYMMDDHHmm')}-urls.csv`
 
       vi.spyOn(upload, 'uploadFileToStorage').mockImplementationOnce(
         async ({ contentStream }) => {
