@@ -24,10 +24,10 @@ export async function increaseUrlVisitUseCase(
   const { slug } = increaseUrlVisitInput.parse(input)
 
   const result = await db
-    .update(schema.shortenedUrls)
-    .set({ totalVisits: sql`${schema.shortenedUrls.totalVisits} + 1` })
-    .where(eq(schema.shortenedUrls.slug, slug))
-    .returning({ totalVisits: schema.shortenedUrls.totalVisits })
+    .update(schema.urls)
+    .set({ totalVisits: sql`${schema.urls.totalVisits} + 1` })
+    .where(eq(schema.urls.slug, slug))
+    .returning({ totalVisits: schema.urls.totalVisits })
 
   if (result.length === 0) {
     return makeLeft(new UrlNotFound())

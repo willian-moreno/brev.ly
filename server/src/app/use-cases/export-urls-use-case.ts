@@ -35,17 +35,17 @@ export async function exportUrlsUseCase(
 
   const { sql, params } = db
     .select({
-      unshortenedUrl: schema.shortenedUrls.unshortenedUrl,
-      slug: schema.shortenedUrls.slug,
-      totalVisits: schema.shortenedUrls.totalVisits,
-      createdAt: schema.shortenedUrls.createdAt,
+      unshortenedUrl: schema.urls.unshortenedUrl,
+      slug: schema.urls.slug,
+      totalVisits: schema.urls.totalVisits,
+      createdAt: schema.urls.createdAt,
     })
-    .from(schema.shortenedUrls)
+    .from(schema.urls)
     .where(
       search && search.trim().length > 0
         ? or(
-            ilike(schema.shortenedUrls.unshortenedUrl, `%${search}%`),
-            ilike(schema.shortenedUrls.slug, `%${search}%`)
+            ilike(schema.urls.unshortenedUrl, `%${search}%`),
+            ilike(schema.urls.slug, `%${search}%`)
           )
         : undefined
     )

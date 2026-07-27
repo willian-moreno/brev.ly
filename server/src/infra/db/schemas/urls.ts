@@ -1,7 +1,7 @@
 import { integer, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 import { uuidv7 } from 'uuidv7'
 
-export const shortenedUrls = pgTable('shortened_urls', {
+export const urls = pgTable('urls', {
   id: text('id')
     .primaryKey()
     .$defaultFn(() => uuidv7()),

@@ -25,21 +25,21 @@ export async function createShortUrlUseCase(
   const { unshortenedUrl, slug } = createShortUrlInput.parse(input)
 
   const result = await db
-    .select({ slug: schema.shortenedUrls.slug })
-    .from(schema.shortenedUrls)
-    .where(eq(schema.shortenedUrls.slug, slug))
+    .select({ slug: schema.urls.slug })
+    .from(schema.urls)
+    .where(eq(schema.urls.slug, slug))
 
   if (result.length > 0) {
     return makeLeft(new UrlAlreadyExists())
   }
 
   const [{ id }] = await db
-    .insert(schema.shortenedUrls)
+    .insert(schema.urls)
     .values({
       unshortenedUrl,
       slug,
     })
-    .returning({ id: schema.shortenedUrls.id })
+    .returning({ id: schema.urls.id })
 
   return makeRight({ id })
 }

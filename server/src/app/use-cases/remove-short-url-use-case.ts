@@ -21,18 +21,16 @@ export async function removeShortUrlUseCase(
 
   const result = await db
     .select({
-      unshortenedUrl: schema.shortenedUrls.unshortenedUrl,
+      unshortenedUrl: schema.urls.unshortenedUrl,
     })
-    .from(schema.shortenedUrls)
-    .where(eq(schema.shortenedUrls.slug, slug))
+    .from(schema.urls)
+    .where(eq(schema.urls.slug, slug))
 
   if (result.length === 0) {
     return makeLeft(new UrlNotFound())
   }
 
-  await db
-    .delete(schema.shortenedUrls)
-    .where(eq(schema.shortenedUrls.slug, slug))
+  await db.delete(schema.urls).where(eq(schema.urls.slug, slug))
 
   return makeRight(true)
 }

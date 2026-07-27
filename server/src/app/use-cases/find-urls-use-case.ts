@@ -35,18 +35,18 @@ export async function findUrlsUseCase(
 
   const query = db
     .select({
-      id: schema.shortenedUrls.id,
-      unshortenedUrl: schema.shortenedUrls.unshortenedUrl,
-      slug: schema.shortenedUrls.slug,
-      totalVisits: schema.shortenedUrls.totalVisits,
-      createdAt: schema.shortenedUrls.createdAt,
+      id: schema.urls.id,
+      unshortenedUrl: schema.urls.unshortenedUrl,
+      slug: schema.urls.slug,
+      totalVisits: schema.urls.totalVisits,
+      createdAt: schema.urls.createdAt,
     })
-    .from(schema.shortenedUrls)
+    .from(schema.urls)
     .where(
       search && search.trim().length > 0
         ? or(
-            ilike(schema.shortenedUrls.unshortenedUrl, `%${search}%`),
-            ilike(schema.shortenedUrls.slug, `%${search}%`)
+            ilike(schema.urls.unshortenedUrl, `%${search}%`),
+            ilike(schema.urls.slug, `%${search}%`)
           )
         : undefined
     )
@@ -69,14 +69,14 @@ export async function findUrlsUseCase(
 
   const countQuery = db
     .select({
-      total: count(schema.shortenedUrls.id),
+      total: count(schema.urls.id),
     })
-    .from(schema.shortenedUrls)
+    .from(schema.urls)
     .where(
       search && search.trim().length > 0
         ? or(
-            ilike(schema.shortenedUrls.unshortenedUrl, `%${search}%`),
-            ilike(schema.shortenedUrls.slug, `%${search}%`)
+            ilike(schema.urls.unshortenedUrl, `%${search}%`),
+            ilike(schema.urls.slug, `%${search}%`)
           )
         : undefined
     )

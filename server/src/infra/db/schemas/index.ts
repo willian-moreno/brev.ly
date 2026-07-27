@@ -1,3 +1,3 @@
-import { shortenedUrls } from './shortened-urls'
+import { urls } from './urls'
 
-export const schema = { shortenedUrls }
+export const schema = { urls }
