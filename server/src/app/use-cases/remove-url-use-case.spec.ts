@@ -7,14 +7,14 @@ import { makeUnshortenedUrl } from '@/test/factories/make-unshortened-url'
 import { createShortUrlUseCase } from './create-short-url-use-case'
 import { findUnshortenedUrlUseCase } from './find-unshortened-url-use-case'
 import {
-  type RemoveShortUrlInput,
-  removeShortUrlInput,
-  removeShortUrlUseCase,
-} from './remove-short-url-use-case'
+  type RemoveUrlInput,
+  removeUrlInput,
+  removeUrlUseCase,
+} from './remove-url-use-case'
 
-describe('Remove short url', () => {
+describe('Remove url', () => {
   describe('happy path', () => {
-    it('should remove an existing short url', async () => {
+    it('should remove an existing url', async () => {
       const slug = makeSlug()
 
       const created = await createShortUrlUseCase({
@@ -28,7 +28,7 @@ describe('Remove short url', () => {
 
       expect(isRight(beforeRemoval)).toBe(true)
 
-      const sut = await removeShortUrlUseCase({ slug })
+      const sut = await removeUrlUseCase({ slug })
 
       expect(isRight(sut)).toBe(true)
 
@@ -43,7 +43,7 @@ describe('Remove short url', () => {
       expect(isLeft(afterRemoval)).toBe(true)
     })
 
-    it('should not affect other existing short urls when removing one', async () => {
+    it('should not affect other existing urls when removing one', async () => {
       const unshortenedUrl = makeUnshortenedUrl()
       const anotherUnshortenedUrl = makeUnshortenedUrl()
       const slug = makeSlug()
@@ -60,7 +60,7 @@ describe('Remove short url', () => {
         slug: slugToKeep,
       })
 
-      const sut = await removeShortUrlUseCase({ slug: slugToRemove })
+      const sut = await removeUrlUseCase({ slug: slugToRemove })
 
       expect(isRight(sut)).toBe(true)
 
@@ -84,10 +84,10 @@ describe('Remove short url', () => {
   })
 
   describe('not found', () => {
-    it('should not be able to remove a short url that does not exist', async () => {
+    it('should not be able to remove an url that does not exist', async () => {
       const slug = makeSlug()
 
-      const sut = await removeShortUrlUseCase({ slug })
+      const sut = await removeUrlUseCase({ slug })
 
       expect(isLeft(sut)).toBe(true)
 
@@ -101,7 +101,7 @@ describe('Remove short url', () => {
       expect(error.message).toBe('URL not found')
     })
 
-    it('should not be able to remove the same short url twice', async () => {
+    it('should not be able to remove the same url twice', async () => {
       const slug = makeSlug()
 
       await createShortUrlUseCase({
@@ -109,11 +109,11 @@ describe('Remove short url', () => {
         slug,
       })
 
-      const first = await removeShortUrlUseCase({ slug })
+      const first = await removeUrlUseCase({ slug })
 
       expect(isRight(first)).toBe(true)
 
-      const second = await removeShortUrlUseCase({ slug })
+      const second = await removeUrlUseCase({ slug })
 
       expect(isLeft(second)).toBe(true)
 
@@ -134,24 +134,22 @@ describe('Remove short url', () => {
 
     it.each(
       invalidSlugCases
-    )('should not be able to remove a short url with $description', async ({
+    )('should not be able to remove an url with $description', async ({
       slug,
     }) => {
-      const input: RemoveShortUrlInput = { slug }
+      const input: RemoveUrlInput = { slug }
 
-      const parse = removeShortUrlInput.safeParse(input)
+      const parse = removeUrlInput.safeParse(input)
 
       expect(parse.success).toBe(false)
 
-      await expect(removeShortUrlUseCase(input)).rejects.toBeInstanceOf(
-        z.ZodError
-      )
+      await expect(removeUrlUseCase(input)).rejects.toBeInstanceOf(z.ZodError)
     })
 
     it('should accept a valid slug', () => {
       const slug = makeSlug()
 
-      const parse = removeShortUrlInput.safeParse({ slug })
+      const parse = removeUrlInput.safeParse({ slug })
 
       expect(parse.success).toBe(true)
     })

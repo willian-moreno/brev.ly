@@ -6,18 +6,18 @@ import { schema } from '@/infra/db/schemas'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
 import { isSlugValid } from '@/shared/is-slug-valid'
 
-export const removeShortUrlInput = z.object({
+export const removeUrlInput = z.object({
   slug: z
     .string()
     .refine(isSlugValid, { error: 'The slug contains invalid characters' }),
 })
 
-export type RemoveShortUrlInput = z.input<typeof removeShortUrlInput>
+export type RemoveUrlInput = z.input<typeof removeUrlInput>
 
-export async function removeShortUrlUseCase(
-  input: RemoveShortUrlInput
+export async function removeUrlUseCase(
+  input: RemoveUrlInput
 ): Promise<Either<Error, true>> {
-  const { slug } = removeShortUrlInput.parse(input)
+  const { slug } = removeUrlInput.parse(input)
 
   const result = await db
     .select({

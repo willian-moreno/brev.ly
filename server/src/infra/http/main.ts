@@ -15,7 +15,7 @@ import { exportUrlsRoute } from './routes/export-urls'
 import { findUnshortenedUrlRoute } from './routes/find-unshortened-url'
 import { findUrlsRoute } from './routes/find-urls'
 import { increaseUrlVisitRoute } from './routes/increase-url-visit'
-import { removeShortUrlRoute } from './routes/remove-short-url'
+import { removeUrlRoute } from './routes/remove-url'
 import { transformSwaggerSchema } from './transform-swagger-schema'
 
 const server = fastify()
@@ -63,7 +63,7 @@ server.register(fastifySwaggerUi, {
 
 server.register(findUrlsRoute)
 server.register(createShortUrlRoute)
-server.register(removeShortUrlRoute)
+server.register(removeUrlRoute)
 server.register(findUnshortenedUrlRoute)
 server.register(increaseUrlVisitRoute)
 server.register(exportUrlsRoute)

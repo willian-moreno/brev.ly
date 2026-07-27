@@ -1,25 +1,25 @@
 import type { FastifyInstance } from 'fastify'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { removeShortUrlUseCase } from '@/app/use-cases/remove-short-url-use-case'
+import { removeUrlUseCase } from '@/app/use-cases/remove-url-use-case'
 import { isLeft, unwrapEither } from '@/shared/either'
 
-const removeShortUrlParams = z.object({
+const removeUrlParams = z.object({
   slug: z.string(),
 })
 
-type RemoveShortUrlParams = z.infer<typeof removeShortUrlParams>
+type RemoveUrlParams = z.infer<typeof removeUrlParams>
 
-export const removeShortUrlRoute: FastifyPluginAsyncZod = async (
+export const removeUrlRoute: FastifyPluginAsyncZod = async (
   server: FastifyInstance
 ) => {
-  server.delete<{ Params: RemoveShortUrlParams }>(
+  server.delete<{ Params: RemoveUrlParams }>(
     '/urls/:slug',
     {
       schema: {
-        summary: 'Remove a short url by slug',
+        summary: 'Remove url by slug',
         tags: ['urls'],
-        params: removeShortUrlParams,
+        params: removeUrlParams,
         response: {
           204: z.void(),
           400: z.object({
@@ -33,7 +33,7 @@ export const removeShortUrlRoute: FastifyPluginAsyncZod = async (
     async (request, reply) => {
       const { slug } = request.params
 
-      const result = await removeShortUrlUseCase({ slug })
+      const result = await removeUrlUseCase({ slug })
 
       if (isLeft(result)) {
         const error = unwrapEither(result)
