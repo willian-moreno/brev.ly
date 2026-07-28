@@ -58,7 +58,7 @@ jobs:
           file: ./server/dockerfile
           load: true
           cache-from: type=gha
-          cache-to: type=,mode=max
+          cache-to: type=gha,mode=max
           tags: |
             ${{ vars.DOCKERHUB_REPOSITORY }}:scan
 
