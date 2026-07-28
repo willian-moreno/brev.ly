@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - main
-    # paths:
-    #   - "server/**"
+    paths:
+      - "server/**"
 
 permissions:
   contents: read
@@ -22,24 +22,24 @@ jobs:
         id: checkout
         uses: actions/checkout@v7
 
-      - name: setup nodejs
-        id: setup_nodejs
-        uses: actions/setup-node@v7
-        with:
-          node-version: 24
+      # - name: setup nodejs
+      #   id: setup_nodejs
+      #   uses: actions/setup-node@v7
+      #   with:
+      #     node-version: 24
 
-      - name: setup pnpm
-        id: setup_pnpm
-        uses: pnpm/action-setup@v6
-        with:
-          version: 11
+      # - name: setup pnpm
+      #   id: setup_pnpm
+      #   uses: pnpm/action-setup@v6
+      #   with:
+      #     version: 11
 
       # Nessa etapa seriam executados os testes.
       # Como é preciso um banco de dados, devido como os testes foram construídos, não é possível no momento.
-      - name: install dependencies
-        id: install_dependencies
-        run: |
-          pnpm install
+      # - name: install dependencies
+      #   id: install_dependencies
+      #   run: |
+      #     pnpm install
 
       - name: generate tag
         id: generate_tag
