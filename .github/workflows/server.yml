@@ -14,6 +14,9 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
     steps:
       - name: checkout
         id: checkout
@@ -31,6 +34,8 @@ jobs:
         with:
           version: 11
 
+      # Nessa etapa seriam executados os testes.
+      # Como é preciso um banco de dados, devido como os testes foram construídos, não é possível no momento.
       - name: install dependencies
         id: install_dependencies
         run: |
@@ -55,11 +60,11 @@ jobs:
         id: run_trivy_vulnerability_scanner
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: '${{ vars.DOCKERHUB_REPOSITORY }}:scan'
-          format: 'table'
+          image-ref: "${{ vars.DOCKERHUB_REPOSITORY }}:scan"
+          format: "table"
           ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH"
 
       - name: login to docker hub
         id: login_docker_hub
