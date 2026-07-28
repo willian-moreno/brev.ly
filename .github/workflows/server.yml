@@ -46,6 +46,10 @@ jobs:
         run: |
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
+      - name: set up docker buildx
+        id: set_up_docker_buildx
+        uses: docker/setup-buildx-action@v4
+
       - name: build the image to scan with trivy
         id: build_to_scan_with_trivy
         uses: docker/build-push-action@v7
@@ -53,6 +57,8 @@ jobs:
           context: ./server
           file: ./server/dockerfile
           load: true
+          cache-from: type=gha
+          cache-to: type=,mode=max
           tags: |
             ${{ vars.DOCKERHUB_REPOSITORY }}:scan
 
@@ -82,10 +88,6 @@ jobs:
       #     docker build -t $DOCKERHUB_REPOSITORY:$IMAGE_TAG .
       #     docker push $DOCKERHUB_REPOSITORY:$IMAGE_TAG
 
-      - name: set up docker buildx
-        id: set_up_docker_buildx
-        uses: docker/setup-buildx-action@v4
-
       - name: build and push the image to Docker Hub
         id: build_and_push
         uses: docker/build-push-action@v7
@@ -93,5 +95,6 @@ jobs:
           context: ./server
           file: ./server/dockerfile
           push: true
+          cache-from: type=gha
           tags: |
             ${{ vars.DOCKERHUB_REPOSITORY }}:${{ steps.generate_tag.outputs.sha }}
