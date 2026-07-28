@@ -46,8 +46,8 @@ jobs:
         id: build_and_push
         uses: docker/build-push-action@v7
         with:
-          context: .
-          file: ./dockerfile
+          context: ./server
+          file: dockerfile
           push: true
           tags: |
             ${{ vars.DOCKERHUB_REPOSITORY }}:${{ steps.generate_tag.outputs.sha }}
