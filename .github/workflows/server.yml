@@ -1,11 +1,11 @@
-name: build and push to docker hub server pipe
+name: server pipe
 
 on:
   push:
     branches:
       - main
-    paths: 
-      - 'server/**'
+    # paths:
+    #   - "server/**"
 
 permissions:
   contents: read
@@ -17,12 +17,49 @@ jobs:
     steps:
       - name: checkout
         id: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+
+      - name: setup nodejs
+        id: setup_nodejs
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: setup pnpm
+        id: setup_pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11
+
+      - name: install dependencies
+        id: install_dependencies
+        run: |
+          pnpm install
 
       - name: generate tag
         id: generate_tag
         run: |
           echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: build the image to scan with trivy
+        id: build_to_scan_with_trivy
+        uses: docker/build-push-action@v7
+        with:
+          context: ./server
+          file: ./server/dockerfile
+          load: true
+          tags: |
+            ${{ vars.DOCKERHUB_REPOSITORY }}:scan
+
+      - name: run trivy vulnerability scanner
+        id: run_trivy_vulnerability_scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: '${{ vars.DOCKERHUB_REPOSITORY }}:scan'
+          format: 'table'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
 
       - name: login to docker hub
         id: login_docker_hub
