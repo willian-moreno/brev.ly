@@ -1,9 +1,12 @@
 name: build and push to docker hub server pipe
 
 on:
-  pull_request:
+  push:
     branches:
-      - "main"
+      - main
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -17,8 +20,7 @@ jobs:
       - name: generate tag
         id: generate_tag
         run: |
-          SHA=$(echo $GITHUB_SHA | head -c7)
-          echo "sha=$SHA" >> $GITHUB_OUTPUT
+          echo "sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
       - name: login to docker hub
         id: login_docker_hub
@@ -45,6 +47,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: .
+          file: ./dockerfile
           push: true
           tags: |
             ${{ vars.DOCKERHUB_REPOSITORY }}:${{ steps.generate_tag.outputs.sha }}
