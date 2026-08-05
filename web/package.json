@@ -1,0 +1,38 @@
+{
+  "name": "brev.ly",
+  "version": "1.0.0",
+  "description": "Desafio prático Pós Full Stack com IA da Rocketseat",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "license": "MIT",
+  "author": "Willian Moreno (willianam.dev@gmail.com)",
+  "keywords": [],
+  "homepage": "https://github.com/willian-moreno/brev.ly#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/willian-moreno/brev.ly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/willian-moreno/brev.ly/issues"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.7",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "globals": "^17.7.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0"
+  }
+}
