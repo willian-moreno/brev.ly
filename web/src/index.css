@@ -3,13 +3,35 @@
 @theme {
   --color-brand-blue-base: #2c46b1;
   --color-brand-blue-dark: #2c4091;
+
   --color-brand-gray-100: #f9f9fb;
   --color-brand-gray-200: #e4e6ec;
   --color-brand-gray-300: #cdcfd5;
   --color-brand-gray-400: #74798b;
   --color-brand-gray-500: #4d505c;
   --color-brand-gray-600: #1f2025;
+
   --color-brand-danger: #b12c4d;
+
+  --text-brand-xl: 1.5rem;
+  --text-brand-xl--line-height: 2rem;
+  --text-brand-xl--font-weight: 600;
+
+  --text-brand-lg: 1.125rem;
+  --text-brand-lg--line-height: 1.5rem;
+  --text-brand-lg--font-weight: 600;
+
+  --text-brand-md: 0.875rem;
+  --text-brand-md--line-height: 1.125rem;
+  --text-brand-md--font-weight: 500;
+
+  --text-brand-sm: 0.75rem;
+  --text-brand-sm--line-height: 1rem;
+  --text-brand-sm--font-weight: 400;
+
+  --text-brand-xs: 0.625rem;
+  --text-brand-xs--line-height: 0.875rem;
+  --text-brand-xs--font-weight: 400;
 
   --font-sans: "Open Sans", sans-serif;
   --font-display: "Open Sans", serif;
