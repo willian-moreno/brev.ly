@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 
 export function AppContainer() {
   return (
-    <div className="p-5">
+    <div className="mx-auto flex max-w-7xl flex-col p-3">
       <Outlet />
     </div>
   )
