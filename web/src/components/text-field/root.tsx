@@ -12,8 +12,8 @@ export function Root({ children, error }: RootProps) {
     >
       {children}
       {error && (
-        <div className="flex items-center gap-2">
-          <WarningIcon className="text-brand-danger text-brand-lg" />
+        <div className="flex gap-2">
+          <WarningIcon className="min-w-fit text-brand-danger text-brand-lg" />
           <span className="text-brand-sm">{error}</span>
         </div>
       )}

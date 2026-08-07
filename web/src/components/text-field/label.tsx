@@ -9,7 +9,7 @@ export function Label({ children, text, ...props }: LabelProps) {
     <label {...props}>
       <span
         className={cn(
-          'mb-2 block text-brand-xs uppercase group-focus-within:font-semibold group-focus-within:text-brand-blue-base group-data-[error-active=true]:text-brand-danger!'
+          'mb-2 block text-brand-xs uppercase transition-all group-focus-within:font-semibold group-focus-within:text-brand-blue-base group-data-[error-active=true]:text-brand-danger!'
         )}
       >
         {text}
