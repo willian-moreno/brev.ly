@@ -22,16 +22,22 @@
     "url": "https://github.com/willian-moreno/brev.ly/issues"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.7.1",
     "@phosphor-icons/react": "^2.1.10",
-    "@radix-ui/themes": "^3.3.0",
+    "@radix-ui/react-scroll-area": "^1.2.18",
     "@tailwindcss/vite": "^4.3.3",
+    "@tanstack/react-query": "^5.101.4",
+    "axios": "^1.19.0",
     "clsx": "^2.1.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-hook-form": "^7.84.0",
     "react-router-dom": "^7.18.2",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.3.1",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
