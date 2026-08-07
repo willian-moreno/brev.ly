@@ -18,11 +18,8 @@ interface MyUrlsCardProps {
 
 export function MyUrlsCard({ cardRoot }: MyUrlsCardProps) {
   const { data: urls, isLoading: isUrlsLoading } = useFindUrlsQuery()
-  const {
-    data: exportedCSV,
-    isFetching: isExportUrlsFetching,
-    refetch,
-  } = useExportUrlsQuery()
+
+  const { isFetching: isExportUrlsFetching, refetch } = useExportUrlsQuery()
 
   const isExportUrlsDisabled = !urls || urls.total === 0 || isExportUrlsFetching
 
