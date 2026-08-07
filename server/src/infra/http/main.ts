@@ -43,7 +43,10 @@ server.setErrorHandler((error, _, reply) => {
   })
 })
 
-server.register(fastifyCors, { origin: '*' })
+server.register(fastifyCors, {
+  origin: ['http://localhost:5173'],
+  credentials: true,
+})
 
 server.register(fastifyMultipart)
 
