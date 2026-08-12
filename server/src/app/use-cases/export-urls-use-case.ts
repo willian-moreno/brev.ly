@@ -2,6 +2,8 @@ import { PassThrough, Transform } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import { stringify } from 'csv-stringify'
 import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 import { ilike, or } from 'drizzle-orm'
 import z from 'zod'
 import { FailureToUploadToStorage } from '@/app/errors/failure-to-upload-to-storage'
@@ -9,6 +11,9 @@ import { db, pg } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { uploadFileToStorage } from '@/infra/storage/upload-file-to-storage'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 export const exportUrlsInput = z.object({
   search: z.string().optional(),
@@ -78,9 +83,10 @@ export async function exportUrlsUseCase(
         callback
       ) {
         for (const chunk of chunks) {
-          chunk.created_at = dayjs(chunk.created_at as string).format(
-            'DD/MM/YYYY HH:mm'
-          )
+          chunk.created_at = dayjs
+            .utc(chunk.created_at as string)
+            .tz('America/Sao_Paulo')
+            .format('DD/MM/YYYY HH:mm')
 
           this.push(chunk)
         }
