@@ -2,18 +2,18 @@ import z from 'zod'
 import { api } from '@/libs/axios'
 import { slugSchema } from '@/schemas'
 
-export const increaseUrlParamsSchema = z.object({
+export const increaseUrlVisitParamsSchema = z.object({
   slug: slugSchema,
 })
 
-export const increaseUrlInputSchema = z.object({
-  params: increaseUrlParamsSchema,
+export const increaseUrlVisitInputSchema = z.object({
+  params: increaseUrlVisitParamsSchema,
 })
 
-export type IncreaseUrlInput = z.input<typeof increaseUrlInputSchema>
+export type IncreaseUrlVisitInput = z.input<typeof increaseUrlVisitInputSchema>
 
-export async function increaseUrl(input: IncreaseUrlInput) {
-  const { params } = increaseUrlInputSchema.parse(input)
+export async function increaseUrlVisit(input: IncreaseUrlVisitInput) {
+  const { params } = increaseUrlVisitInputSchema.parse(input)
   const { slug } = params
 
   await api.patch(`/urls/${slug}/access`)
