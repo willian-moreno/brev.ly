@@ -11,6 +11,8 @@ const envSchema = z.object({
   CLOUDFLARE_SECRET_ACCESS_KEY: z.string(),
   CLOUDFLARE_BUCKET: z.string(),
   CLOUDFLARE_PUBLIC_URL: z.url(),
+
+  VITE_FRONTEND_URL: z.url(),
 })
 
 export const env = envSchema.parse(process.env)
