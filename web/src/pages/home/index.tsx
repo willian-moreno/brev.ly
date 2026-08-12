@@ -4,7 +4,7 @@ import { MyUrlsCard } from './my-urls-card'
 
 export function Home() {
   return (
-    <>
+    <div className="flex w-full flex-col py-3">
       <img
         alt="Brev.ly"
         className="mx-auto my-6 h-8 w-fit md:ml-0"
@@ -16,6 +16,6 @@ export function Home() {
         />
         <MyUrlsCard cardRoot={{ className: 'col-span-12 md:col-span-7' }} />
       </div>
-    </>
+    </div>
   )
 }
