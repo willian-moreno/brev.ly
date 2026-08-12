@@ -22,6 +22,7 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
+    ".env": ".env.*",
     "package.json": "biome.json, package-lock.json, pnpm-*.yaml, tsconfig*.json, vite.config.*"
   },
   "files.associations": {
