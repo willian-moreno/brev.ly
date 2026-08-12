@@ -70,7 +70,9 @@ export function MyUrlsCard({ cardRoot }: MyUrlsCardProps) {
             {isUrlsLoading ? (
               <div className="space-y-3 md:space-y-4">
                 <URLListItemSkeleton />
+                <Separator />
                 <URLListItemSkeleton />
+                <Separator />
                 <URLListItemSkeleton />
               </div>
             ) : urls && urls.total > 0 ? (
