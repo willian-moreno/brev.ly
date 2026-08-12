@@ -1,4 +1,5 @@
 import { CopyIcon, TrashIcon } from '@phosphor-icons/react'
+import * as Dialog from '@radix-ui/react-dialog'
 import type { MutationOptions } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { RemoveUrlInput } from '@/api/remove-url'
@@ -87,14 +88,43 @@ export function URLListItem({ url }: URLListItemProps) {
         >
           <CopyIcon className="text-brand-gray-600 text-brand-lg" />
         </Button>
-        <Button
-          disabled={isRemoveUrlPending}
-          icon
-          loading={isRemoveUrlPending}
-          onClick={handleRemoveUrl}
-        >
-          <TrashIcon className="text-brand-gray-600 text-brand-lg" />
-        </Button>
+        <Dialog.Root>
+          <Dialog.Trigger asChild>
+            <Button icon>
+              <TrashIcon className="text-brand-gray-600 text-brand-lg" />
+            </Button>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay className="fixed inset-0 bg-black/15 backdrop-blur-xs transition-all" />
+            <Dialog.Content className="fixed top-1/2 left-1/2 flex h-fit w-120 max-w-[95dvw] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-lg bg-white p-6 shadow-brand-gray-600/5 shadow-xl ring-1 ring-brand-gray-200 transition-all md:p-8">
+              <Dialog.Title className="mb-3 text-brand-xl">
+                Remover link?
+              </Dialog.Title>
+              <Dialog.Description className="mb-6 text-brand-gray-500 text-brand-md">
+                Tem certeza de que deseja remover este link? Essa ação não
+                poderá ser desfeita.
+              </Dialog.Description>
+              <div className="flex items-center justify-between gap-4">
+                <Dialog.Close asChild>
+                  <Button
+                    density="compact"
+                    variant="secondary"
+                  >
+                    Cancelar
+                  </Button>
+                </Dialog.Close>
+                <Button
+                  density="compact"
+                  disabled={isRemoveUrlPending}
+                  loading={isRemoveUrlPending}
+                  onClick={handleRemoveUrl}
+                >
+                  Remover
+                </Button>
+              </div>
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
       </div>
     </li>
   )
