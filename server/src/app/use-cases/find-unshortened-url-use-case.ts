@@ -4,12 +4,10 @@ import { UrlNotFound } from '@/app/errors/url-not-found'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
-import { isSlugValid } from '@/shared/is-slug-valid'
+import { slugSchema } from '@/shared/schemas'
 
 export const findUnshortenedUrlInput = z.object({
-  slug: z.string().refine(isSlugValid, {
-    error: 'The slug contains invalid characters',
-  }),
+  slug: slugSchema,
 })
 
 export type FindUnshortenedUrlInput = z.input<typeof findUnshortenedUrlInput>

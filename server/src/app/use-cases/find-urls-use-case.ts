@@ -3,6 +3,7 @@ import z from 'zod'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { makeRight, type Right } from '@/shared/either'
+import type { Url } from '@/shared/schemas'
 
 export const findUrlsInput = z.object({
   search: z.string().optional(),
@@ -17,13 +18,7 @@ export const findUrlsInput = z.object({
 export type FindUrlsInput = z.input<typeof findUrlsInput>
 
 export type FindUrlsOutput = {
-  items: {
-    id: string
-    unshortenedUrl: string
-    slug: string
-    totalVisits: number
-    createdAt: Date
-  }[]
+  items: Url[]
   total: number
 }
 

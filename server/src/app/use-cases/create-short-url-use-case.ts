@@ -4,13 +4,11 @@ import { UrlAlreadyExists } from '@/app/errors/url-already-exists'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { type Either, makeLeft, makeRight } from '@/shared/either'
-import { isSlugValid } from '@/shared/is-slug-valid'
+import { slugSchema, unshortenedUrlSchema } from '@/shared/schemas'
 
 export const createShortUrlInput = z.object({
-  unshortenedUrl: z.url({ error: 'The url contains invalid characters' }),
-  slug: z.string().refine(isSlugValid, {
-    error: 'The slug contains invalid characters',
-  }),
+  unshortenedUrl: unshortenedUrlSchema,
+  slug: slugSchema,
 })
 
 export type CreateShortUrlInput = z.input<typeof createShortUrlInput>
