@@ -4,14 +4,16 @@ export const unshortenedUrlSchema = z
   .url({
     error: 'O link informado é inválido',
   })
-  .refine(
-    value => {
-      const url = new URL(value)
-      return url.origin !== location.origin
-    },
-    {
-      error: 'O link informado não pode ser o mesmo do site atual',
-    }
+  .pipe(
+    z.string().refine(
+      value => {
+        const url = new URL(value)
+        return url.origin !== location.origin
+      },
+      {
+        error: 'O link informado não pode ser o mesmo do site atual',
+      }
+    )
   )
 
 export const slugSchema = z
