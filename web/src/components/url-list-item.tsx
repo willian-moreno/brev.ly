@@ -118,6 +118,7 @@ export function URLListItem({ url }: URLListItemProps) {
                   disabled={isRemoveUrlPending}
                   loading={isRemoveUrlPending}
                   onClick={handleRemoveUrl}
+                  variant="destructive"
                 >
                   Remover
                 </Button>

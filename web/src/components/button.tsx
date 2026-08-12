@@ -17,6 +17,10 @@ const variants = tv({
         base: 'bg-brand-gray-200 text-brand-gray-500! hover:ring-1 hover:ring-brand-blue-base focus-visible:outline-1 focus-visible:outline-brand-blue-base focus-visible:outline-offset-2',
         icon: 'text-brand-gray-500!',
       },
+      destructive: {
+        base: 'bg-brand-danger text-white! ring-1 ring-brand-danger hover:bg-rose-800 hover:ring-rose-800 focus-visible:bg-rose-800 focus-visible:outline-1 focus-visible:outline-rose-800 focus-visible:outline-offset-2',
+        icon: 'text-white!',
+      },
     },
     density: {
       default: {
