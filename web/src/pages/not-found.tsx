@@ -7,7 +7,7 @@ export function NotFound() {
     <>
       <Helmet title="Página não encontrada" />
       <div className="flex min-h-dvh w-full flex-col">
-        <Card.Root className="mx-auto my-auto max-w-145">
+        <Card.Root className="mx-auto my-auto w-full max-w-145">
           <Card.Content className="gap-6 px-5 py-12 md:px-12 md:py-16">
             <img
               alt="404"
@@ -21,7 +21,7 @@ export function NotFound() {
               O link que você está tentando acessar não existe, foi removido ou
               é uma URL inválida. Saiba mais em{' '}
               <a
-                className="text-brand-blue-base"
+                className="text-brand-blue-base underline"
                 href="/"
               >
                 brev.ly
