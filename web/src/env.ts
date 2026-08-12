@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export const envSchema = z.object({
   MODE: z.enum(['production', 'development']).default('production'),
+  VITE_FRONTEND_URL: z.url(),
   VITE_BACKEND_URL: z.url(),
   VITE_ENABLE_API_DELAY: z.string().transform(value => value === 'true'),
 })
