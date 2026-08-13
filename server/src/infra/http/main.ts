@@ -44,7 +44,7 @@ server.setErrorHandler((error, _, reply) => {
 })
 
 server.register(fastifyCors, {
-  origin: [env.VITE_FRONTEND_URL],
+  origin: env.VITE_FRONTEND_URL ?? '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   credentials: true,
 })
