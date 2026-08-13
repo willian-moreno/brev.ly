@@ -1,5 +1,6 @@
 import fastifyCors from '@fastify/cors'
 import fastifyMultipart from '@fastify/multipart'
+import fastifyRateLimit from '@fastify/rate-limit'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
 import fastify from 'fastify'
@@ -10,6 +11,7 @@ import {
 } from 'fastify-type-provider-zod'
 import z from 'zod'
 import { env } from '@/env'
+import { hasStatusCode } from '@/shared/has-status-code'
 import { createShortUrlRoute } from './routes/create-short-url'
 import { exportUrlsRoute } from './routes/export-urls'
 import { findUnshortenedUrlRoute } from './routes/find-unshortened-url'
@@ -38,6 +40,12 @@ server.setErrorHandler((error, _, reply) => {
     })
   }
 
+  if (hasStatusCode(error) && error.statusCode === 429) {
+    return reply.status(429).send({
+      message: 'Too Many Requests',
+    })
+  }
+
   return reply.status(500).send({
     message: 'Internal server error',
   })
@@ -47,6 +55,11 @@ server.register(fastifyCors, {
   origin: env.VITE_FRONTEND_URL ?? '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE'],
   credentials: true,
+})
+
+server.register(fastifyRateLimit, {
+  max: 10,
+  timeWindow: '5000ms',
 })
 
 server.register(fastifyMultipart)
